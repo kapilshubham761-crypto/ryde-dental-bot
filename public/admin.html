@@ -75,6 +75,10 @@ th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04
 tr:last-child td{border-bottom:none}
 .tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:#FFEDEB;color:var(--coralDeep)}
 select{padding:5px 9px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;background:#fff}
+.ltop{max-width:1000px;margin:0 auto 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ltitle{font-weight:700;font-size:14px;color:var(--ink)}
+.exp{background:var(--teal);color:#fff;border:none;border-radius:10px;padding:9px 14px;font-weight:700;font-size:13px;cursor:pointer}
+.exp:hover{background:var(--tealDeep)}.exp:disabled{opacity:.5;cursor:default}
 
 @media(max-width:760px){
   .list{width:100%}
@@ -118,7 +122,10 @@ select{padding:5px 9px;border:1px solid var(--line);border-radius:8px;font-size:
     </div>
   </div>
 
-  <div id="bookTab"><div class="tablewrap"><div id="leadsBox"></div></div></div>
+  <div id="bookTab">
+    <div class="ltop"><div class="ltitle">Bookings &amp; callbacks</div><button id="exportBtn" class="exp">⬇ Export CSV</button></div>
+    <div class="tablewrap"><div id="leadsBox"></div></div>
+  </div>
 </div>
 
 <script>
@@ -256,5 +263,23 @@ function renderLeads(force){
     sel.onchange=function(){ fetch("/api/admin/lead-status",{method:"POST",headers:hdr(),body:JSON.stringify({id:sel.getAttribute("data-lead"),status:sel.value})}).then(function(){ leadSig=""; }); };
   });
 }
+
+/* ---- export leads as CSV (Name, Mobile, Email, Status only) ---- */
+function csvCell(v){ return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
+function exportLeads(){
+  var leads = DATA.leads || [];
+  if(!leads.length){ alert("No bookings or callbacks to export yet."); return; }
+  var rows = [["Name","Mobile","Email","Status"]];
+  leads.forEach(function(l){ rows.push([l.name, l.phone, l.email, l.status]); });
+  var csv = rows.map(function(r){ return r.map(csvCell).join(","); }).join("\r\n");
+  var blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8;" }); // BOM so Excel reads it correctly
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "ryde-dental-leads-" + new Date().toISOString().slice(0,10) + ".csv";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+}
+g("exportBtn").onclick = exportLeads;
 </script>
 </body></html>
