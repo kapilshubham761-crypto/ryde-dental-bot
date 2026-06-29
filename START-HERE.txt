@@ -1,0 +1,25 @@
+RYDE DENTAL FAMILY — "SMILY" AI CHATBOT — ALL FILES
+====================================================
+
+OPEN FIRST:  SETUP-GUIDE.html   (the full click-by-click guide to go live, free)
+
+WHAT'S IN HERE
+--------------
+1) SETUP-GUIDE.html        The guide. Follow Stage A -> E to put Smily live.
+2) test-smily.html         Try Smily instantly with your own free Gemini key.
+3) chatbot-kit/            <- THIS is what you deploy (backend + widget + inbox):
+     - server.js ............ Smily's brain (runs on Render = "the backend")
+     - public/widget.js ..... the chat bubble for the website
+     - public/admin.html .... the STAFF INBOX (where you read ALL messages)
+     - google-apps-script.gs  paste into a Google Sheet to EMAIL every chat + booking
+     - package.json, .env.example, README.md
+4) extras/in-chat-demo.jsx The early design mockup (reference only).
+
+THE THREE THINGS PEOPLE ASK
+---------------------------
+- "How do I set up the backend?"  -> Guide Stage B (deploy server.js to Render).
+- "Where do I see all the messages?" -> the staff inbox at  your-address/admin  (Stage D).
+- "Can I get the chats by email?"  -> Yes. See "EMAIL-SETUP" in README (use google-apps-script.gs).
+
+BASICS:  Cost to run = $0   |   Assistant name = Smily
+Only access needed to Dr Bedi's site: paste ONE <script> line into WordPress.

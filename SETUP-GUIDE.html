@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Get Smily Live — Setup Guide</title>
+<style>
+  :root{
+    --teal:#0E5A57; --tealDeep:#0A3F3D; --coral:#F2615A; --coralDeep:#DC4F49;
+    --ink:#10302F; --paper:#FBFDFC; --mint:#EAF4F2; --line:#DCEAE7; --muted:#5B7472; --bg:#EEF4F2;
+    --amber:#9A6B00; --amberBg:#FFF6E4; --amberLn:#F3E2BC;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6;font-size:16px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px 80px}
+
+  header{background:linear-gradient(135deg,var(--teal),var(--tealDeep));color:#fff;padding:46px 20px 40px;text-align:center}
+  header .sp{width:54px;height:54px;border-radius:16px;background:rgba(255,255,255,.14);display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px}
+  header h1{margin:0 0 8px;font-size:30px;font-weight:800;letter-spacing:-.02em}
+  header p{margin:0;color:#C7E7E3;font-size:15.5px}
+  header .meta{margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  header .chip{background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.18);color:#EAFBF8;font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:20px}
+
+  .intro{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px 24px;margin-top:-22px;box-shadow:0 18px 40px rgba(10,63,61,.10)}
+  .intro h2{margin:0 0 6px;font-size:17px}
+  .intro p{margin:0 0 12px;color:var(--muted);font-size:14.5px}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .flow span{flex:1;min-width:120px;background:var(--mint);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:13px;font-weight:600;color:var(--teal);text-align:center}
+  .flow span b{display:block;font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.04em}
+
+  .access{margin-top:18px;background:var(--paper);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .access h3{margin:0;padding:14px 18px;font-size:14px;border-bottom:1px solid var(--line);background:#F4FAF8}
+  table{width:100%;border-collapse:collapse}
+  td,th{text-align:left;padding:11px 18px;font-size:13.5px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  tr:last-child td{border-bottom:none}
+  .yes{color:var(--teal);font-weight:700}.no{color:var(--muted)}
+
+  section.part{margin-top:34px;background:var(--paper);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+  .phead{display:flex;align-items:center;gap:14px;padding:18px 22px;border-bottom:1px solid var(--line);background:#F4FAF8}
+  .pnum{width:38px;height:38px;border-radius:11px;background:var(--teal);color:#fff;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .phead h2{margin:0;font-size:18.5px}
+  .phead .t{font-size:13px;color:var(--muted);margin-top:1px}
+  .pbody{padding:8px 22px 22px}
+
+  ol.steps{list-style:none;margin:0;padding:0;counter-reset:s}
+  ol.steps>li{position:relative;padding:14px 0 14px 38px;border-bottom:1px dashed var(--line)}
+  ol.steps>li:last-child{border-bottom:none}
+  ol.steps>li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:13px;width:24px;height:24px;border-radius:50%;background:var(--mint);color:var(--teal);font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center}
+  .chk{display:flex;gap:10px;align-items:flex-start}
+  .chk input{margin-top:4px;width:17px;height:17px;accent-color:var(--coral);flex-shrink:0}
+  .chk .x{font-size:14.5px}
+  .chk small{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+  a{color:var(--teal);font-weight:600;text-decoration:none;border-bottom:1px solid #BFD9D5}
+  a:hover{color:var(--coralDeep)}
+  kbd{background:#EAF1EF;border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-size:12.5px;font-family:inherit;font-weight:600;white-space:nowrap}
+
+  .code{position:relative;background:#0C2A28;border-radius:11px;padding:13px 46px 13px 15px;margin:10px 0 4px;overflow-x:auto}
+  .code code{color:#CFF3EC;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;white-space:pre}
+  .copy{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:none;color:#CFF3EC;font-size:11.5px;font-weight:700;padding:5px 9px;border-radius:7px;cursor:pointer}
+  .copy:hover{background:rgba(255,255,255,.2)}
+  .copy.done{background:#1F7A5E;color:#fff}
+
+  .call{border-radius:12px;padding:13px 15px;margin:14px 0;font-size:13.5px;display:flex;gap:10px;align-items:flex-start}
+  .call.tip{background:var(--mint);border:1px solid var(--line)}
+  .call.warn{background:var(--amberBg);border:1px solid var(--amberLn);color:#5b4a1e}
+  .call b{color:inherit}
+  .call .i{font-size:16px;line-height:1.3}
+
+  .field{display:grid;grid-template-columns:170px 1fr;gap:6px 14px;background:#F4FAF8;border:1px solid var(--line);border-radius:11px;padding:13px 15px;margin:10px 0;font-size:13.5px}
+  .field .k{font-weight:700;color:var(--teal)}
+  .field .v{color:var(--muted)}
+  @media(max-width:560px){.field{grid-template-columns:1fr}.field .k{margin-top:8px}}
+
+  .tro{margin-top:34px}
+  .tro h2{font-size:18px;margin:0 0 10px}
+  .tro .row{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:13px 16px;margin-bottom:9px;font-size:13.5px}
+  .tro .row b{color:var(--ink)}
+  footer{margin-top:36px;text-align:center;color:var(--muted);font-size:12.5px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="sp"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#EAFBF8" stroke-width="2.2"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15l-1.9-4.1L5.5 9l4.6-1.4L12 3z"/></svg></div>
+  <h1>Get Smily Live</h1>
+  <p>The complete setup guide for Ryde Dental Family</p>
+  <div class="meta"><span class="chip">⏱️ ~20 minutes</span><span class="chip">💸 $0 to run</span><span class="chip">🧑‍💻 No coding</span></div>
+</header>
+
+<div class="wrap">
+
+  <div class="intro">
+    <h2>What you're about to do</h2>
+    <p>Five short stages take Smily from a folder of files to a live chat bubble on the clinic's website, with a staff inbox — all on free tiers.</p>
+    <div class="flow">
+      <span><b>A</b> Get AI key</span>
+      <span><b>B</b> Put it online</span>
+      <span><b>C</b> Add to website</span>
+      <span><b>D</b> Open inbox</span>
+      <span><b>E</b> Optional polish</span>
+    </div>
+
+    <div class="access">
+      <h3>🔑 What you'll need (all free, mostly your own accounts)</h3>
+      <table>
+        <tr><th>Stage</th><th>You'll need</th><th>Whose account</th></tr>
+        <tr><td>Get the AI key</td><td>A Google login</td><td class="yes">Yours</td></tr>
+        <tr><td>Put Smily online</td><td>A GitHub + a Render login (free, made below)</td><td class="yes">Yours</td></tr>
+        <tr><td>Add the bubble</td><td>WordPress admin login <i>— or</i> just send one line to whoever runs the site</td><td class="yes">Dr Bedi's site</td></tr>
+        <tr><td>Domain / hosting / cPanel</td><td class="no">Not needed at all</td><td class="no">—</td></tr>
+      </table>
+    </div>
+    <div class="call tip"><span class="i">📦</span><span>Have the <b>ryde-chatbot-kit.zip</b> handy and <b>unzip it</b> somewhere you can find (e.g. your Desktop). You'll upload its contents in Stage&nbsp;B.</span></div>
+  </div>
+
+  <!-- PART A -->
+  <section class="part" id="a">
+    <div class="phead"><div class="pnum">A</div><div><h2>Get your free Gemini key</h2><div class="t">This is Smily's brain — free, no credit card · ~3 min</div></div></div>
+    <div class="pbody">
+      <ol class="steps">
+        <li><label class="chk"><input type="checkbox"><span class="x">Go to <a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a> and sign in with any Google account.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Click <kbd>Get API key</kbd>, then <kbd>Create API key</kbd> → <kbd>Create API key in new project</kbd>.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Click <kbd>Copy</kbd>. Paste it into a notes app for a minute — you'll need it in Stage B.<small>Never put this key on the website or send it in a chat. It only ever goes into Render's settings.</small></span></label></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- PART B -->
+  <section class="part" id="b">
+    <div class="phead"><div class="pnum">B</div><div><h2>Put Smily online (for free)</h2><div class="t">Upload the files to GitHub, then deploy on Render · ~8 min</div></div></div>
+    <div class="pbody">
+
+      <p style="font-weight:700;margin:10px 0 2px;color:var(--teal)">B1 · Upload the folder to GitHub</p>
+      <ol class="steps">
+        <li><label class="chk"><input type="checkbox"><span class="x">Go to <a href="https://github.com" target="_blank" rel="noopener">github.com</a> → <kbd>Sign up</kbd> (free).</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Click the <kbd>+</kbd> (top-right) → <kbd>New repository</kbd>. Name it <kbd>ryde-dental-bot</kbd>, leave it Public, click <kbd>Create repository</kbd>.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">On the new page, click the link <kbd>uploading an existing file</kbd>.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x"><b>Drag in everything from inside the unzipped kit folder</b> — <kbd>server.js</kbd>, <kbd>package.json</kbd>, the <kbd>public</kbd> folder, etc. Wait for them to finish uploading, then click <kbd>Commit changes</kbd>.<small>Tip: select all the files inside the folder and drag them together. The README and demo file can come along too — they do no harm.</small></span></label></li>
+      </ol>
+
+      <p style="font-weight:700;margin:18px 0 2px;color:var(--teal)">B2 · Deploy it on Render</p>
+      <ol class="steps">
+        <li><label class="chk"><input type="checkbox"><span class="x">Go to <a href="https://render.com" target="_blank" rel="noopener">render.com</a> → <kbd>Get Started</kbd> → sign in <b>with GitHub</b> (no credit card needed).</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Click <kbd>New +</kbd> → <kbd>Web Service</kbd> → choose your <kbd>ryde-dental-bot</kbd> repo → <kbd>Connect</kbd>.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Set these three fields:</span></label>
+          <div class="field"><div class="k">Build Command</div><div class="v">npm install</div><div class="k">Start Command</div><div class="v">node server.js</div><div class="k">Instance Type</div><div class="v">Free</div></div>
+        </li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Open <kbd>Advanced</kbd> → <kbd>Add Environment Variable</kbd> and add these three (use your own values):</span></label>
+          <div class="field">
+            <div class="k">GEMINI_API_KEY</div><div class="v">your key from Stage A</div>
+            <div class="k">ADMIN_TOKEN</div><div class="v">any password you invent (for the staff inbox)</div>
+            <div class="k">HANDBACK_MINUTES</div><div class="v">1&nbsp; (how fast Smily resumes after staff reply)</div>
+          </div>
+        </li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Click <kbd>Create Web Service</kbd>. Wait a few minutes for it to build.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">At the top you'll see your live address, like <kbd>https://ryde-dental-bot.onrender.com</kbd>. <b>Copy it.</b> Open it in a new tab — you should see the chat bubble. Say hi to test it. 🎉<small>First message may take ~30–60s while it wakes — that's the free tier. After that it's instant. (We'll cover this in Stage E.)</small></span></label></li>
+      </ol>
+      <div class="call tip"><span class="i">✅</span><span>If the bubble loads and Smily replies, the hard part is done — the backend is live and running on Gemini.</span></div>
+    </div>
+  </section>
+
+  <!-- PART C -->
+  <section class="part" id="c">
+    <div class="phead"><div class="pnum">C</div><div><h2>Add Smily to the website</h2><div class="t">One line into WordPress · ~3 min</div></div></div>
+    <div class="pbody">
+      <p>Take your Render address from Stage B and build this single line (swap in <b>your</b> address):</p>
+      <div class="code"><button class="copy">Copy</button><code>&lt;script src="https://ryde-dental-bot.onrender.com/widget.js" defer&gt;&lt;/script&gt;</code></div>
+
+      <p style="margin-top:16px">Then add it to the clinic's WordPress site:</p>
+      <ol class="steps">
+        <li><label class="chk"><input type="checkbox"><span class="x">Log in to the site's admin: go to <kbd>yourdomain.com/wp-admin</kbd>.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Go to <kbd>Plugins</kbd> → <kbd>Add New</kbd> → search <b>WPCode</b> → <kbd>Install</kbd> → <kbd>Activate</kbd>.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Open <kbd>Code Snippets</kbd> → <kbd>+ Add Snippet</kbd> → <kbd>Add Your Custom Code (HTML)</kbd>.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Paste the line, set <b>Code Type = HTML</b>, location <b>Site Wide Footer</b>, flip it to <b>Active</b>, and <kbd>Save</kbd>.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Visit the website — the Smily bubble is now bottom-right, on every page. Done! 🎉</span></label></li>
+      </ol>
+      <div class="call tip"><span class="i">🙋</span><span><b>No WordPress access?</b> You don't need it — just email that one <kbd>&lt;script&gt;</kbd> line to whoever manages Dr Bedi's site. It's a 10-second paste for them, and nothing else on his hosting or domain has to change.</span></div>
+    </div>
+  </section>
+
+  <!-- PART D -->
+  <section class="part" id="d">
+    <div class="phead"><div class="pnum">D</div><div><h2>Open the staff inbox</h2><div class="t">Where reception reads chats & bookings · ~1 min</div></div></div>
+    <div class="pbody">
+      <p>Your inbox is simply your Render address + <kbd>/admin</kbd>:</p>
+      <div class="code"><button class="copy">Copy</button><code>https://ryde-dental-bot.onrender.com/admin</code></div>
+      <ol class="steps">
+        <li><label class="chk"><input type="checkbox"><span class="x">Open that link, type the <b>ADMIN_TOKEN</b> password you set in Stage B.</span></label></li>
+        <li><label class="chk"><input type="checkbox"><span class="x">Bookmark it and share with reception. There they can see every chat, <b>reply as the team</b> (which pauses Smily for that chat), and see all <b>bookings & callbacks</b> with a New → Contacted → Booked status.</span></label></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- PART E -->
+  <section class="part" id="e">
+    <div class="phead"><div class="pnum">E</div><div><h2>Optional polish (when you're ready)</h2><div class="t">Two upgrades — neither is required to launch</div></div></div>
+    <div class="pbody">
+      <p style="font-weight:700;margin:10px 0 4px;color:var(--teal)">1 · Remove the "slow first message"</p>
+      <p style="color:var(--muted);font-size:14px;margin:0 0 8px">Smily already wakes the server early and captures details during any wait, so most visitors won't notice. If the clinic gets late-night traffic and you want it instant 24/7, in Render open the service → <kbd>Settings</kbd> → change the instance from <b>Free</b> to <b>Starter</b> (about US$7/month ≈ A$11). That removes sleeping entirely.</p>
+
+      <p style="font-weight:700;margin:16px 0 4px;color:var(--teal)">2 · Email every chat + keep a permanent record</p>
+      <p style="color:var(--muted);font-size:14px;margin:0 0 8px">Smily can email you each booking the moment it happens and a transcript of every chat, and save everything to a Google Sheet so nothing's ever lost. The kit includes <kbd>google-apps-script.gs</kbd> with ~5-minute setup notes inside — paste it into a new Google Sheet, deploy it as a Web app, and add its URL to Render as <kbd>NOTIFY_WEBHOOK_URL</kbd>. (Full steps are under <b>"EMAIL-SETUP"</b> in the README.) Prefer email-only? A free <a href="https://web3forms.com" target="_blank" rel="noopener">Web3Forms</a> key in <kbd>WEB3FORMS_KEY</kbd> also works.</p>
+
+      <div class="call warn"><span class="i">⚠️</span><span><b>Recommended before you rely on it:</b> set up the email + Sheet logging above, so every booking has a permanent home — on the free tier the in-app list can reset when the server sleeps.</span></div>
+    </div>
+  </section>
+
+  <!-- TROUBLESHOOTING -->
+  <div class="tro">
+    <h2>If something's off</h2>
+    <div class="row"><b>Bubble says "Setup needed"</b> → the <kbd>GEMINI_API_KEY</kbd> isn't set in Render. Re-check it under the service's Environment settings.</div>
+    <div class="row"><b>Inbox says "Wrong password"</b> → the word you typed doesn't match the <kbd>ADMIN_TOKEN</kbd> in Render's settings.</div>
+    <div class="row"><b>No bubble on the website</b> → make sure the <kbd>&lt;script&gt;</kbd> line uses your real Render address and ends in <kbd>/widget.js</kbd>, and that the WPCode snippet is set to <b>Active</b>.</div>
+    <div class="row"><b>First message very slow</b> → the free server was asleep; it wakes in ~30–60s, then it's instant. Stage&nbsp;E removes this.</div>
+    <div class="row"><b>A "high demand / 503" reply</b> → Google's model was briefly busy. Smily now retries automatically — usually it just takes a beat longer.</div>
+  </div>
+
+  <footer>Made for Ryde Dental Family · Smily runs on Google Gemini (free tier) + Render (free tier).<br>Edit Smily's wording, hours or team anytime in <kbd>server.js</kbd> → <kbd>SYSTEM_PROMPT</kbd>, then re-upload to GitHub.</footer>
+
+</div>
+
+<script>
+  document.querySelectorAll(".copy").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var code = btn.parentElement.querySelector("code").innerText;
+      var done = function(){ btn.textContent = "Copied!"; btn.classList.add("done"); setTimeout(function(){ btn.textContent="Copy"; btn.classList.remove("done"); }, 1600); };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(done).catch(function(){ fallback(code); done(); });
+      } else { fallback(code); done(); }
+    });
+  });
+  function fallback(text){
+    var ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select(); try{ document.execCommand("copy"); }catch(e){} document.body.removeChild(ta);
+  }
+</script>
+</body>
+</html>
