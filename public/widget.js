@@ -11,7 +11,6 @@
   var seen = {};       // ts -> already known (event de-dupe)
   msgs.forEach(function (m) { if (m.ts) seen[m.ts] = 1; });
   var mode = "ai", open = false, started = false, listening = false, recog = null, pollTimer = null;
-  var COLD_MS = 3500, warmTimer = null;
 
   var C = { teal: "#F17A31", tealDeep: "#C56428", coral: "#F17A31", coralDeep: "#C56428",
     ink: "#38291B", mint: "#FAEFE1", line: "#ECE2D4", muted: "#8A7A68", bg: "#FBF6EF" };
@@ -60,15 +59,6 @@
     ".rdf-seg{display:flex;gap:8px}.rdf-seg button{flex:1;padding:10px;border:1px solid " + C.line + ";background:#fff;border-radius:10px;cursor:pointer;font-size:13px;color:" + C.muted + "}.rdf-seg button.on{background:" + C.teal + ";color:#EAFBF8;border-color:" + C.teal + "}" +
     ".rdf-fbtn{padding:12px;border:none;border-radius:10px;background:" + C.coral + ";color:#fff;font-weight:700;cursor:pointer;font-size:14px}" +
     ".rdf-fn{font-size:11px;color:" + C.muted + ";text-align:center}" +
-    "#rdf-load{display:flex;flex-direction:column;align-items:center;gap:11px;padding:26px 16px 22px;text-align:center;animation:rdfin .25s ease}" +
-    ".rdf-orb{position:relative;width:66px;height:66px}" +
-    ".rdf-ring{position:absolute;inset:0;border:3px solid #FBE1D1;border-top-color:" + C.teal + ";border-radius:50%;animation:rdfspin 1s linear infinite}" +
-    ".rdf-tooth{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;animation:rdfchew 1.3s ease-in-out infinite}" +
-    "@keyframes rdfchew{0%,100%{transform:scale(1)}50%{transform:scale(.8)}}" +
-    ".rdf-lt{font-weight:700;font-size:14px;color:" + C.ink + "}" +
-    ".rdf-ls{font-size:12.5px;color:" + C.muted + ";max-width:240px;line-height:1.45}" +
-    ".rdf-edot{display:inline-block;animation:rdfblink 1.4s infinite}.rdf-edot:nth-child(2){animation-delay:.2s}.rdf-edot:nth-child(3){animation-delay:.4s}" +
-    "@keyframes rdfblink{0%,100%{opacity:.25}50%{opacity:1}}" +
     "@keyframes rdfspin{to{transform:rotate(360deg)}}";
 
   var spark = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#EAFBF8" stroke-width="2.2"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15l-1.9-4.1L5.5 9l4.6-1.4L12 3z"/></svg>';
@@ -78,7 +68,6 @@
   var micI = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8A7A68" stroke-width="2"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0M12 17v4"/></svg>';
   var clipI = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#8A7A68" stroke-width="2"><path d="M21 12.5l-8.5 8.5a5 5 0 01-7-7l9-9a3.5 3.5 0 015 5l-9 9a2 2 0 01-3-3l8.5-8.5"/></svg>';
   var sendI = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#EAFBF8" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>';
-  var tooth = '<svg width="30" height="30" viewBox="0 0 24 24" fill="' + C.teal + '"><path d="M12 2C9.5 2 8.5 3 7 3 5.6 3 4.4 2.5 3.3 3.4 2 4.5 2 6.6 2.4 8.6c.4 1.9 1 2.7 1.4 4.7.3 1.5.4 3.2.8 4.8.3 1.3.7 3 1.7 3.4 1.4.5 1.9-1.4 2.2-3 .3-1.4.5-3.2 1.5-3.2s1.2 1.8 1.5 3.2c.3 1.6.8 3.5 2.2 3 1-.4 1.4-2.1 1.7-3.4.4-1.6.5-3.3.8-4.8.4-2 1-2.8 1.4-4.7C22 6.6 22 4.5 20.7 3.4 19.6 2.5 18.4 3 17 3c-1.5 0-2.5-1-5-1z"/></svg>';
 
   var root = document.createElement("div"); root.id = "rdfw";
   root.innerHTML =
@@ -120,7 +109,7 @@
   function addRow(m) {
     if (rendered[m.ts]) return;
     rendered[m.ts] = 1;
-    var anchor = $("rdf-typing") || $("rdf-load");
+    var anchor = $("rdf-typing");
     var node = buildRow(m);
     if (anchor) body.insertBefore(node, anchor); else body.appendChild(node);
   }
@@ -161,14 +150,13 @@
     push("user", text);
     chipsEl.innerHTML = "";
     typing(true);
-    warmTimer = setTimeout(showLoading, COLD_MS);
     try {
       var r = await fetch(API + "/api/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ sessionId: SID, message: text }) });
       var d = await r.json();
-      clearTimeout(warmTimer); typing(false); removeLoading();
+      typing(false);
       if (d.mode) setMode(d.mode);
       if (d.reply) push("bot", d.reply, { chips: d.chips || [] });
-    } catch (e) { clearTimeout(warmTimer); typing(false); removeLoading(); push("bot", "Sorry, I couldn't reach the clinic just now — please call (02) 9807 9800.", { chips: [] }); }
+    } catch (e) { typing(false); push("bot", "Sorry, I couldn't reach the clinic just now — please call (02) 9807 9800.", { chips: [] }); }
   }
 
   async function poll() {
@@ -182,18 +170,6 @@
     } catch (e) {}
   }
 
-  // --- friendly tooth loader while the free server wakes up (no form) ---
-  function removeLoading() { var w = $("rdf-load"); if (w) w.remove(); }
-  function showLoading() {
-    if ($("rdf-load")) return;
-    var t = $("rdf-typing"); if (t) t.remove();   // swap the little dots for the branded loader
-    var c = el("div"); c.id = "rdf-load";
-    c.innerHTML =
-      '<div class="rdf-orb"><div class="rdf-ring"></div><div class="rdf-tooth">' + tooth + '</div></div>' +
-      '<div class="rdf-lt">Connecting you to Smily<span class="rdf-edot">.</span><span class="rdf-edot">.</span><span class="rdf-edot">.</span></div>' +
-      '<div class="rdf-ls">Just waking things up — the first reply can take a few seconds.</div>';
-    body.appendChild(c); scrollDown();
-  }
 
   // --- direct booking form ---
   function closeBook() { var f = $("rdf-form"); if (f) f.remove(); }
