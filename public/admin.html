@@ -2,142 +2,259 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Ryde Dental — Staff Inbox</title>
 <style>
-:root{--teal:#0E5A57;--tealDeep:#0A3F3D;--coral:#F2615A;--ink:#0F2E2E;--mint:#EAF4F2;--line:#DCEAE7;--muted:#5B7472;--bg:#EDF3F1;--green:#0B6B4A}
-*{box-sizing:border-box}body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
-header{background:linear-gradient(135deg,var(--tealDeep),var(--teal));color:#fff;padding:16px 22px;display:flex;align-items:center;gap:10px;font-weight:800}
-.wrap{max-width:1100px;margin:0 auto;padding:20px}
-.gate{max-width:380px;margin:80px auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;text-align:center}
-input,button{font:inherit}
-.in{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;outline:none;margin:8px 0}
-.btn{background:var(--coral);color:#fff;border:none;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}
-.stats{display:flex;gap:14px;margin-bottom:18px;flex-wrap:wrap}
-.stat{flex:1;min-width:140px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
-.stat .n{font-size:26px;font-weight:800}.stat .l{font-size:12.5px;color:var(--muted);margin-top:3px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:840px){.grid{grid-template-columns:1fr}}
-.panel{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
-.panel h2{font-size:14px;margin:0;padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
-.sess{border-bottom:1px solid var(--line);padding:12px 14px}
-.sess .top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px}
-.b-ai{background:#DDF3EA;color:var(--green)}.b-h{background:#FFF4DE;color:#9A6B00}
-.tx{max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:8px;background:var(--bg);border-radius:10px;margin-bottom:8px}
-.m{max-width:85%;padding:7px 10px;font-size:12.5px;border-radius:10px}
-.m.user{align-self:flex-end;background:var(--teal);color:#EAFBF8}
-.m.bot{align-self:flex-start;background:#fff;border:1px solid var(--line)}
-.m.team{align-self:flex-start;background:#FFEDEB;border:1px solid #F6D3D0}.m.sys{align-self:center;color:var(--muted);font-size:11px}
-.replyrow{display:flex;gap:7px}
-.replyrow input{flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:9px;outline:none;font-size:13px}
-.replyrow .s{background:var(--coral);color:#fff;border:none;border-radius:9px;width:38px;cursor:pointer}
-.hb{background:var(--mint);color:var(--teal);border:none;border-radius:9px;padding:0 12px;cursor:pointer;font-size:12px;font-weight:700}
-table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:9px 12px;font-size:13px;border-bottom:1px solid var(--line)}
-th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
-select{padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:12px}
-.tag{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:#E3F0EF;color:var(--teal)}
-.empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}
+:root{--teal:#0E5A57;--tealDeep:#0A3F3D;--coral:#F2615A;--coralDeep:#DC4F49;--ink:#10302F;--paper:#FBFDFC;--mint:#EAF4F2;--line:#DCEAE7;--muted:#5B7472;--bg:#EEF4F2;--green:#0B6B4A;--amber:#9A6B00}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column;overflow:hidden}
+button,input{font:inherit}
+a{color:var(--teal)}
+
+/* gate */
+#gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(900px 500px at 50% -10%,#DCEEEB,#EEF4F2);z-index:50;padding:20px}
+.gx{background:#fff;border:1px solid var(--line);border-radius:20px;max-width:380px;width:100%;padding:30px;text-align:center;box-shadow:0 24px 60px rgba(10,63,61,.12)}
+.gx .sp{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,var(--teal),var(--tealDeep));display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px}
+.gx h2{margin:0 0 4px;font-size:20px}.gx p{color:var(--muted);font-size:13.5px;margin:0 0 16px}
+.gx input{width:100%;padding:12px 13px;border:1px solid var(--line);border-radius:11px;outline:none;margin-bottom:10px;font-size:15px}
+.gx button{width:100%;padding:12px;border:none;border-radius:11px;background:var(--coral);color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.gerr{color:var(--coralDeep);font-size:12.5px;min-height:16px;margin-bottom:6px}
+
+/* top bar */
+.bar{display:flex;align-items:center;gap:12px;padding:12px 18px;background:linear-gradient(135deg,var(--tealDeep),var(--teal));color:#fff;flex-shrink:0}
+.bar .logo{font-weight:800;font-size:16px;display:flex;align-items:center;gap:8px}
+.bar .stats{margin-left:auto;display:flex;gap:8px}
+.bar .stat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:6px 12px;text-align:center;min-width:64px}
+.bar .stat b{display:block;font-size:17px;line-height:1}.bar .stat span{font-size:10.5px;color:#C7E7E3}
+.bar .clock{font-size:11.5px;opacity:.8;margin-left:6px}
+@media(max-width:720px){.bar .stat span{display:none}.bar .stat{min-width:0;padding:5px 9px}.bar .clock{display:none}}
+
+/* tabs */
+.tabs{display:flex;gap:4px;padding:8px 14px 0;background:var(--paper);border-bottom:1px solid var(--line);flex-shrink:0}
+.tab{padding:9px 16px;border:none;background:none;cursor:pointer;font-weight:600;font-size:13.5px;color:var(--muted);border-bottom:2px solid transparent}
+.tab.on{color:var(--teal);border-bottom-color:var(--coral)}
+.tab .pip{display:inline-block;min-width:18px;padding:0 5px;margin-left:5px;background:var(--coral);color:#fff;border-radius:20px;font-size:11px;font-weight:700}
+
+/* conversations split */
+#convTab{flex:1;display:flex;min-height:0}
+.list{width:330px;border-right:1px solid var(--line);overflow-y:auto;background:var(--paper);flex-shrink:0}
+.citem{padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;gap:10px;align-items:flex-start}
+.citem:hover{background:var(--mint)}
+.citem.sel{background:#E2F0EE;box-shadow:inset 3px 0 0 var(--coral)}
+.citem .ava{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#157E79,var(--tealDeep));color:#EAFBF8;font-weight:700;font-size:12px}
+.citem .mid{flex:1;min-width:0}
+.citem .nm{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:6px}
+.citem .pv{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.citem .rt{font-size:10.5px;color:var(--muted);flex-shrink:0}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--coral);flex-shrink:0}
+.bdg{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
+.b-ai{background:#DDF3EA;color:var(--green)}.b-h{background:#FFF4DE;color:var(--amber)}
+.empty{padding:30px 20px;text-align:center;color:var(--muted);font-size:13px}
+
+.detail{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
+.dhead{padding:12px 16px;border-bottom:1px solid var(--line);background:var(--paper);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.dhead .back{display:none;background:none;border:none;font-size:20px;cursor:pointer;color:var(--ink)}
+.dhead .who{font-weight:700;font-size:14px}
+.dhead .sub{font-size:11.5px;color:var(--muted)}
+.dhead .hb{margin-left:auto;background:var(--mint);color:var(--teal);border:1px solid var(--line);border-radius:9px;padding:6px 11px;cursor:pointer;font-size:12px;font-weight:700}
+.tr{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:9px}
+.m{max-width:78%;padding:9px 12px;font-size:13.5px;line-height:1.45;border-radius:14px;white-space:pre-wrap;word-wrap:break-word}
+.m.user{align-self:flex-end;background:var(--teal);color:#EAFBF8;border-bottom-right-radius:4px}
+.m.bot{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
+.m.team{align-self:flex-end;background:#FFEDEB;border:1px solid #F6D3D0;border-bottom-right-radius:4px}
+.m.sys{align-self:center;background:#E7EEEC;color:var(--muted);font-size:11px;border-radius:20px;padding:4px 11px}
+.m .lab{font-size:10px;font-weight:700;opacity:.7;margin-bottom:2px}
+.replybar{padding:12px;border-top:1px solid var(--line);background:var(--paper);display:flex;gap:8px;flex-shrink:0}
+.replybar input{flex:1;padding:11px 14px;border:1px solid var(--line);border-radius:22px;outline:none;font-size:14px;background:#fff}
+.replybar .send{width:44px;height:44px;border:none;border-radius:50%;background:var(--coral);color:#fff;cursor:pointer;font-size:18px;flex-shrink:0}
+.nodetail{flex:1;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13.5px;text-align:center;padding:20px}
+
+/* bookings */
+#bookTab{flex:1;overflow-y:auto;padding:18px;display:none}
+.tablewrap{max-width:1000px;margin:0 auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+td,th{text-align:left;padding:12px 14px;font-size:13.5px;border-bottom:1px solid var(--line)}
+th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:#F4FAF8}
+tr:last-child td{border-bottom:none}
+.tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:#FFEDEB;color:var(--coralDeep)}
+select{padding:5px 9px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;background:#fff}
+
+@media(max-width:760px){
+  .list{width:100%}
+  #convTab .detail{display:none}
+  #convTab.show-detail .list{display:none}
+  #convTab.show-detail .detail{display:flex;width:100%}
+  .dhead .back{display:block}
+}
 </style></head>
 <body>
-<div id="gate" class="gate">
-  <h2>🦷 Staff Inbox</h2>
-  <p style="color:var(--muted);font-size:14px">Enter the admin password (your <code>ADMIN_TOKEN</code>).</p>
-  <input class="in" id="tok" type="password" placeholder="Admin password"/>
-  <button class="btn" id="enter" style="width:100%">Open inbox</button>
-</div>
 
-<div id="app" style="display:none">
-  <header>🦷 Ryde Dental Family — Staff Inbox <span style="margin-left:auto;font-size:12px;font-weight:500;opacity:.85" id="clock"></span></header>
-  <div class="wrap">
+<div id="gate"><div class="gx">
+  <div class="sp"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EAFBF8" stroke-width="2.2"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.9L12 15l-1.9-4.1L5.5 9l4.6-1.4L12 3z"/></svg></div>
+  <h2>Staff Inbox</h2>
+  <p>Enter the admin password (your <code>ADMIN_TOKEN</code>).</p>
+  <div class="gerr" id="gerr"></div>
+  <input id="tok" type="password" placeholder="Admin password" autocomplete="current-password"/>
+  <button id="enter">Open inbox</button>
+</div></div>
+
+<div id="app" style="display:none;flex:1;flex-direction:column;min-height:0">
+  <div class="bar">
+    <div class="logo">🦷 Ryde Dental — Staff Inbox</div>
     <div class="stats">
-      <div class="stat"><div class="n" id="s-total">0</div><div class="l">Total enquiries</div></div>
-      <div class="stat"><div class="n" id="s-new">0</div><div class="l">New · need a call</div></div>
-      <div class="stat"><div class="n" id="s-cb">0</div><div class="l">Callback requests</div></div>
-      <div class="stat"><div class="n" id="s-live">0</div><div class="l">Active chats</div></div>
+      <div class="stat"><b id="s-live">0</b><span>Active chats</span></div>
+      <div class="stat"><b id="s-new">0</b><span>New leads</span></div>
+      <div class="stat"><b id="s-cb">0</b><span>Callbacks</span></div>
     </div>
-    <div class="grid">
-      <div class="panel"><h2>💬 Live conversations</h2><div id="live"></div></div>
-      <div class="panel"><h2>📥 Patient enquiries</h2><div id="leads"></div></div>
+    <span class="clock" id="clock"></span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" id="tabConv">💬 Conversations</button>
+    <button class="tab" id="tabBook">📥 Bookings <span class="pip" id="bookCount">0</span></button>
+  </div>
+
+  <div id="convTab">
+    <div class="list" id="convList"></div>
+    <div class="detail">
+      <div id="detailInner" class="nodetail">Select a conversation on the left to read it and reply.</div>
     </div>
   </div>
+
+  <div id="bookTab"><div class="tablewrap"><div id="leadsBox"></div></div></div>
 </div>
 
 <script>
 var TOK = localStorage.getItem("rdf_admin_tok") || "";
-function hdr(){ return { "Content-Type":"application/json", "x-admin-token": TOK }; }
-function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
-function ago(ts){ var s=Math.floor((Date.now()-ts)/1000); if(s<60)return"just now"; var m=Math.floor(s/60); if(m<60)return m+"m ago"; var h=Math.floor(m/60); if(h<24)return h+"h ago"; return Math.floor(h/24)+"d ago"; }
-function mmss(ms){ var t=Math.max(0,Math.ceil(ms/1000)); return Math.floor(t/60)+":"+String(t%60).padStart(2,"0"); }
+var DATA = { sessions: [], leads: [] };
+var selectedId = null, detailCount = 0, lastSeen = {}, leadSig = "", tab = "conv";
 
-document.getElementById("enter").onclick=function(){ TOK=document.getElementById("tok").value.trim(); start(); };
-document.getElementById("tok").addEventListener("keydown",function(e){ if(e.key==="Enter"){TOK=this.value.trim();start();} });
+function g(id){ return document.getElementById(id); }
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function hdr(){ return { "Content-Type":"application/json", "x-admin-token": TOK }; }
+function ago(ts){ var s=Math.floor((Date.now()-ts)/1000); if(s<60)return"now"; var m=Math.floor(s/60); if(m<60)return m+"m"; var h=Math.floor(m/60); if(h<24)return h+"h"; return Math.floor(h/24)+"d"; }
+function mmss(ms){ var t=Math.max(0,Math.ceil(ms/1000)); return Math.floor(t/60)+":"+String(t%60).padStart(2,"0"); }
+function last(s){ for(var i=s.messages.length-1;i>=0;i--){ if(s.messages[i].role!=="system") return s.messages[i]; } return s.messages[s.messages.length-1]||{text:""}; }
+
+g("enter").onclick=function(){ TOK=g("tok").value.trim(); start(); };
+g("tok").addEventListener("keydown",function(e){ if(e.key==="Enter"){ TOK=this.value.trim(); start(); } });
 if(TOK) start();
 
 async function start(){
   try{
     var r=await fetch("/api/admin/data",{headers:hdr()});
-    if(r.status===401){ alert("Wrong password."); return; }
+    if(r.status===401){ g("gerr").textContent="Wrong password — try again."; return; }
     localStorage.setItem("rdf_admin_tok",TOK);
-    document.getElementById("gate").style.display="none";
-    document.getElementById("app").style.display="block";
-    tick(); setInterval(tick,1000); refresh(); setInterval(refresh,4000);
-  }catch(e){ alert("Couldn't reach the server."); }
+    g("gate").style.display="none"; g("app").style.display="flex";
+    tick(); setInterval(tick,1000);
+    await refresh(); setInterval(refresh,4000);
+  }catch(e){ g("gerr").textContent="Couldn't reach the server."; }
 }
-function tick(){ document.getElementById("clock").textContent=new Date().toLocaleTimeString(); }
+function tick(){ g("clock").textContent=new Date().toLocaleTimeString(); }
 
-var DATA={sessions:[],leads:[]};
+g("tabConv").onclick=function(){ tab="conv"; g("tabConv").classList.add("on"); g("tabBook").classList.remove("on"); g("convTab").style.display="flex"; g("bookTab").style.display="none"; };
+g("tabBook").onclick=function(){ tab="book"; g("tabBook").classList.add("on"); g("tabConv").classList.remove("on"); g("convTab").style.display="none"; g("bookTab").style.display="block"; renderLeads(true); };
+
 async function refresh(){
-  try{ var r=await fetch("/api/admin/data",{headers:hdr()}); DATA=await r.json(); paint(); }catch(e){}
+  try{ var r=await fetch("/api/admin/data",{headers:hdr()}); if(r.status===401)return; DATA=await r.json(); paint(); }catch(e){}
 }
+function activeSessions(){ return (DATA.sessions||[]).filter(function(s){ return s.messages && s.messages.some(function(m){return m.role==="user";}); }); }
+
 function paint(){
-  var leads=DATA.leads||[], sess=DATA.sessions||[];
-  document.getElementById("s-total").textContent=leads.length;
-  document.getElementById("s-new").textContent=leads.filter(function(l){return l.status==="New";}).length;
-  document.getElementById("s-cb").textContent=leads.filter(function(l){return l.type==="Callback";}).length;
-  var active=sess.filter(function(s){ return s.messages && s.messages.some(function(m){return m.role==="user";}); });
-  document.getElementById("s-live").textContent=active.length;
+  var leads=DATA.leads||[], act=activeSessions();
+  g("s-live").textContent=act.length;
+  g("s-new").textContent=leads.filter(function(l){return l.status==="New";}).length;
+  g("s-cb").textContent=leads.filter(function(l){return l.type==="Callback";}).length;
+  g("bookCount").textContent=leads.length;
+  renderList(act);
+  if(selectedId){ updateHead(); appendTranscript(); }
+  renderLeads(false);
+}
 
-  // live conversations
-  var live=document.getElementById("live"); var html="";
-  active.slice(0,12).forEach(function(s){
-    var human=s.mode==="human";
-    var rem=human&&s.resumeAt?(s.resumeAt-Date.now()):0;
-    html+='<div class="sess"><div class="top">'+
-      '<b style="font-size:13px">Visitor '+esc(s.id.slice(-4))+'</b>'+
-      (human?'<span class="badge b-h">You\'re handling · AI back in '+mmss(rem)+'</span>':'<span class="badge b-ai">AI handling</span>')+
-      '<span style="margin-left:auto;font-size:11px;color:var(--muted)">'+ago(s.lastActivity)+'</span></div>';
-    html+='<div class="tx">';
-    s.messages.slice(-8).forEach(function(m){
-      if(m.role==="system"){ html+='<div class="m sys">'+esc(m.text)+'</div>'; return; }
-      var c=m.role==="user"?"user":(m.role==="team"?"team":"bot");
-      html+='<div class="m '+c+'">'+(m.role==="team"?'<b style="font-size:10px;color:var(--coral)">You</b><br>':'')+esc(m.text)+'</div>';
-    });
-    html+='</div><div class="replyrow">'+
-      (human?'<button class="hb" data-hb="'+s.id+'">Hand back</button>':'')+
-      '<input placeholder="Reply as reception (pauses the AI)…" data-sid="'+s.id+'"/>'+
-      '<button class="s" data-send="'+s.id+'">→</button></div></div>';
+/* ---- conversation list (safe to rebuild: no inputs here) ---- */
+function renderList(act){
+  var box=g("convList");
+  if(!act.length){ box.innerHTML='<div class="empty">No conversations yet.<br>Open the chat widget in another tab and say hi.</div>'; return; }
+  act.sort(function(a,b){ return b.lastActivity-a.lastActivity; });
+  box.innerHTML="";
+  act.forEach(function(s){
+    var lm=last(s), human=s.mode==="human";
+    var unread = (lastSeen[s.id]||0) < s.messages.length && s.id!==selectedId && lm.role==="user";
+    var d=document.createElement("div"); d.className="citem"+(s.id===selectedId?" sel":"");
+    d.innerHTML='<div class="ava">'+esc(s.id.slice(-2).toUpperCase())+'</div>'+
+      '<div class="mid"><div class="nm">Visitor '+esc(s.id.slice(-4))+
+        (human?' <span class="bdg b-h">You</span>':'<span class="bdg b-ai">AI</span>')+
+        (unread?' <span class="dot"></span>':'')+'</div>'+
+        '<div class="pv">'+(lm.role==="user"?"":lm.role==="team"?"You: ":"Smily: ")+esc(lm.text)+'</div></div>'+
+      '<div class="rt">'+ago(s.lastActivity)+'</div>';
+    d.onclick=function(){ selectConv(s.id); };
+    box.appendChild(d);
   });
-  live.innerHTML=html||'<div class="empty">No live chats yet. Open the widget in another tab and say hi.</div>';
+}
 
-  // leads
-  var lb=document.getElementById("leads");
-  if(!leads.length){ lb.innerHTML='<div class="empty">No enquiries yet.</div>'; }
-  else{
-    var t='<table><tr><th>Name</th><th>About</th><th>When</th><th>Status</th><th></th></tr>';
-    leads.slice(0,60).forEach(function(l){
-      t+='<tr><td><b>'+esc(l.name)+'</b><br><span style="color:var(--muted);font-size:11.5px">'+esc(l.phone)+(l.email?' · '+esc(l.email):'')+(l.patientType&&l.type!=='Callback'?' · '+esc(l.patientType):'')+'</span>'+
-        (l.type==="Callback"?' <span class="tag">Callback</span>':'')+'</td>'+
-        '<td>'+esc(l.service)+'</td><td style="font-size:12px">'+esc(l.when)+'</td>'+
-        '<td><select data-lead="'+l.id+'">'+["New","Contacted","Booked"].map(function(o){return '<option'+(l.status===o?' selected':'')+'>'+o+'</option>';}).join("")+'</select></td>'+
-        '<td style="color:var(--muted);font-size:11px">'+ago(l.createdAt)+'</td></tr>';
-    });
-    lb.innerHTML=t+'</table>';
+/* ---- detail: append only, so the reply box is never wiped ---- */
+function selectConv(id){
+  selectedId=id; detailCount=0;
+  var s=findSession(id); lastSeen[id]= s? s.messages.length : 0;
+  var det=document.querySelector(".detail");
+  det.innerHTML=
+    '<div class="dhead"><button class="back" id="backBtn">&larr;</button>'+
+    '<div><div class="who" id="dWho"></div><div class="sub" id="dSub"></div></div>'+
+    '<button class="hb" id="hbBtn" style="display:none">Hand back to Smily</button></div>'+
+    '<div class="tr" id="transcript"></div>'+
+    '<div class="replybar"><input id="replyInput" placeholder="Reply as reception (pauses Smily)…" autocomplete="off"/>'+
+    '<button class="send" id="replySend">&rarr;</button></div>';
+  g("backBtn").onclick=function(){ g("convTab").classList.remove("show-detail"); selectedId=null; renderList(activeSessions()); };
+  g("hbBtn").onclick=function(){ if(selectedId) fetch("/api/staff/handback",{method:"POST",headers:hdr(),body:JSON.stringify({sessionId:selectedId})}).then(refresh); };
+  g("replySend").onclick=sendReply;
+  g("replyInput").addEventListener("keydown",function(e){ if(e.key==="Enter") sendReply(); });
+  g("convTab").classList.add("show-detail");
+  updateHead(); appendTranscript(); renderList(activeSessions());
+}
+function findSession(id){ return (DATA.sessions||[]).find(function(s){return s.id===id;}); }
+
+function updateHead(){
+  var s=findSession(selectedId); if(!s||!g("dWho"))return;
+  var human=s.mode==="human", rem=human&&s.resumeAt?(s.resumeAt-Date.now()):0;
+  g("dWho").textContent="Visitor "+s.id.slice(-4);
+  g("dSub").innerHTML= human? 'You\u2019re handling \u00b7 Smily resumes in '+mmss(rem) : 'Smily is handling';
+  g("hbBtn").style.display= human? "block":"none";
+}
+function appendTranscript(){
+  var s=findSession(selectedId), tr=g("transcript"); if(!s||!tr)return;
+  for(var i=detailCount;i<s.messages.length;i++){
+    var m=s.messages[i], cls=m.role==="user"?"user":m.role==="team"?"team":m.role==="system"?"sys":"bot";
+    var d=document.createElement("div"); d.className="m "+cls;
+    d.innerHTML=(m.role==="team"?'<div class="lab">You</div>':"")+esc(m.text);
+    tr.appendChild(d);
   }
-  wire();
+  if(s.messages.length>detailCount){ detailCount=s.messages.length; lastSeen[selectedId]=detailCount; tr.scrollTop=tr.scrollHeight; }
 }
-function wire(){
-  document.querySelectorAll("[data-send]").forEach(function(b){ b.onclick=function(){ var sid=b.getAttribute("data-send"); var inp=document.querySelector('input[data-sid="'+sid+'"]'); reply(sid,inp.value); inp.value=""; }; });
-  document.querySelectorAll("input[data-sid]").forEach(function(inp){ inp.onkeydown=function(e){ if(e.key==="Enter"){ reply(inp.getAttribute("data-sid"),inp.value); inp.value=""; } }; });
-  document.querySelectorAll("[data-hb]").forEach(function(b){ b.onclick=function(){ fetch("/api/staff/handback",{method:"POST",headers:hdr(),body:JSON.stringify({sessionId:b.getAttribute("data-hb")})}).then(refresh); }; });
-  document.querySelectorAll("select[data-lead]").forEach(function(s){ s.onchange=function(){ fetch("/api/admin/lead-status",{method:"POST",headers:hdr(),body:JSON.stringify({id:s.getAttribute("data-lead"),status:s.value})}); }; });
+function sendReply(){
+  var inp=g("replyInput"); if(!inp)return; var t=inp.value.trim(); if(!t)return;
+  inp.value="";
+  fetch("/api/staff/reply",{method:"POST",headers:hdr(),body:JSON.stringify({sessionId:selectedId,text:t})}).then(refresh);
 }
-function reply(sid,text){ text=(text||"").trim(); if(!text)return; fetch("/api/staff/reply",{method:"POST",headers:hdr(),body:JSON.stringify({sessionId:sid,text:text})}).then(refresh); }
+
+/* ---- bookings (only re-render when data actually changes) ---- */
+function renderLeads(force){
+  var leads=DATA.leads||[];
+  var sig=leads.length+"|"+leads.map(function(l){return l.id+l.status;}).join(",");
+  if(!force && sig===leadSig) return;
+  // don't yank a dropdown the user is mid-change on
+  if(!force && document.activeElement && document.activeElement.tagName==="SELECT") return;
+  leadSig=sig;
+  var box=g("leadsBox");
+  if(!leads.length){ box.innerHTML='<div class="empty">No bookings or callbacks yet.</div>'; return; }
+  var t='<table><tr><th>Patient</th><th>About</th><th>When</th><th>Status</th><th>Received</th></tr>';
+  leads.slice(0,80).forEach(function(l){
+    t+='<tr><td><b>'+esc(l.name)+'</b>'+(l.type==="Callback"?' <span class="tag">Callback</span>':'')+
+      '<br><span style="color:var(--muted);font-size:12px">'+esc(l.phone)+(l.email?' \u00b7 '+esc(l.email):'')+(l.patientType&&l.patientType!=="\u2014"?' \u00b7 '+esc(l.patientType):'')+'</span></td>'+
+      '<td>'+esc(l.service)+'</td><td style="font-size:12.5px">'+esc(l.when)+'</td>'+
+      '<td><select data-lead="'+l.id+'">'+["New","Contacted","Booked"].map(function(o){return '<option'+(l.status===o?' selected':'')+'>'+o+'</option>';}).join("")+'</select></td>'+
+      '<td style="color:var(--muted);font-size:11.5px">'+ago(l.createdAt)+' ago</td></tr>';
+  });
+  box.innerHTML=t+'</table>';
+  box.querySelectorAll("select[data-lead]").forEach(function(sel){
+    sel.onchange=function(){ fetch("/api/admin/lead-status",{method:"POST",headers:hdr(),body:JSON.stringify({id:sel.getAttribute("data-lead"),status:sel.value})}).then(function(){ leadSig=""; }); };
+  });
+}
 </script>
 </body></html>
