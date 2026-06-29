@@ -1,0 +1,10 @@
+{
+  "name": "ryde-dental-chatbot",
+  "version": "1.0.0",
+  "description": "AI dental chatbot (Gemini) + staff inbox for Ryde Dental Family",
+  "type": "module",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" },
+  "dependencies": { "express": "^4.19.2" }
+}

@@ -1,0 +1,143 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ryde Dental — Staff Inbox</title>
+<style>
+:root{--teal:#0E5A57;--tealDeep:#0A3F3D;--coral:#F2615A;--ink:#0F2E2E;--mint:#EAF4F2;--line:#DCEAE7;--muted:#5B7472;--bg:#EDF3F1;--green:#0B6B4A}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+header{background:linear-gradient(135deg,var(--tealDeep),var(--teal));color:#fff;padding:16px 22px;display:flex;align-items:center;gap:10px;font-weight:800}
+.wrap{max-width:1100px;margin:0 auto;padding:20px}
+.gate{max-width:380px;margin:80px auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px;text-align:center}
+input,button{font:inherit}
+.in{width:100%;padding:11px 13px;border:1px solid var(--line);border-radius:10px;outline:none;margin:8px 0}
+.btn{background:var(--coral);color:#fff;border:none;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}
+.stats{display:flex;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.stat{flex:1;min-width:140px;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+.stat .n{font-size:26px;font-weight:800}.stat .l{font-size:12.5px;color:var(--muted);margin-top:3px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:840px){.grid{grid-template-columns:1fr}}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.panel h2{font-size:14px;margin:0;padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.sess{border-bottom:1px solid var(--line);padding:12px 14px}
+.sess .top{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:20px}
+.b-ai{background:#DDF3EA;color:var(--green)}.b-h{background:#FFF4DE;color:#9A6B00}
+.tx{max-height:180px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding:8px;background:var(--bg);border-radius:10px;margin-bottom:8px}
+.m{max-width:85%;padding:7px 10px;font-size:12.5px;border-radius:10px}
+.m.user{align-self:flex-end;background:var(--teal);color:#EAFBF8}
+.m.bot{align-self:flex-start;background:#fff;border:1px solid var(--line)}
+.m.team{align-self:flex-start;background:#FFEDEB;border:1px solid #F6D3D0}.m.sys{align-self:center;color:var(--muted);font-size:11px}
+.replyrow{display:flex;gap:7px}
+.replyrow input{flex:1;padding:9px 11px;border:1px solid var(--line);border-radius:9px;outline:none;font-size:13px}
+.replyrow .s{background:var(--coral);color:#fff;border:none;border-radius:9px;width:38px;cursor:pointer}
+.hb{background:var(--mint);color:var(--teal);border:none;border-radius:9px;padding:0 12px;cursor:pointer;font-size:12px;font-weight:700}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:9px 12px;font-size:13px;border-bottom:1px solid var(--line)}
+th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+select{padding:5px 8px;border:1px solid var(--line);border-radius:8px;font-size:12px}
+.tag{font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:20px;background:#E3F0EF;color:var(--teal)}
+.empty{padding:24px;text-align:center;color:var(--muted);font-size:13px}
+</style></head>
+<body>
+<div id="gate" class="gate">
+  <h2>🦷 Staff Inbox</h2>
+  <p style="color:var(--muted);font-size:14px">Enter the admin password (your <code>ADMIN_TOKEN</code>).</p>
+  <input class="in" id="tok" type="password" placeholder="Admin password"/>
+  <button class="btn" id="enter" style="width:100%">Open inbox</button>
+</div>
+
+<div id="app" style="display:none">
+  <header>🦷 Ryde Dental Family — Staff Inbox <span style="margin-left:auto;font-size:12px;font-weight:500;opacity:.85" id="clock"></span></header>
+  <div class="wrap">
+    <div class="stats">
+      <div class="stat"><div class="n" id="s-total">0</div><div class="l">Total enquiries</div></div>
+      <div class="stat"><div class="n" id="s-new">0</div><div class="l">New · need a call</div></div>
+      <div class="stat"><div class="n" id="s-cb">0</div><div class="l">Callback requests</div></div>
+      <div class="stat"><div class="n" id="s-live">0</div><div class="l">Active chats</div></div>
+    </div>
+    <div class="grid">
+      <div class="panel"><h2>💬 Live conversations</h2><div id="live"></div></div>
+      <div class="panel"><h2>📥 Patient enquiries</h2><div id="leads"></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+var TOK = localStorage.getItem("rdf_admin_tok") || "";
+function hdr(){ return { "Content-Type":"application/json", "x-admin-token": TOK }; }
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function ago(ts){ var s=Math.floor((Date.now()-ts)/1000); if(s<60)return"just now"; var m=Math.floor(s/60); if(m<60)return m+"m ago"; var h=Math.floor(m/60); if(h<24)return h+"h ago"; return Math.floor(h/24)+"d ago"; }
+function mmss(ms){ var t=Math.max(0,Math.ceil(ms/1000)); return Math.floor(t/60)+":"+String(t%60).padStart(2,"0"); }
+
+document.getElementById("enter").onclick=function(){ TOK=document.getElementById("tok").value.trim(); start(); };
+document.getElementById("tok").addEventListener("keydown",function(e){ if(e.key==="Enter"){TOK=this.value.trim();start();} });
+if(TOK) start();
+
+async function start(){
+  try{
+    var r=await fetch("/api/admin/data",{headers:hdr()});
+    if(r.status===401){ alert("Wrong password."); return; }
+    localStorage.setItem("rdf_admin_tok",TOK);
+    document.getElementById("gate").style.display="none";
+    document.getElementById("app").style.display="block";
+    tick(); setInterval(tick,1000); refresh(); setInterval(refresh,4000);
+  }catch(e){ alert("Couldn't reach the server."); }
+}
+function tick(){ document.getElementById("clock").textContent=new Date().toLocaleTimeString(); }
+
+var DATA={sessions:[],leads:[]};
+async function refresh(){
+  try{ var r=await fetch("/api/admin/data",{headers:hdr()}); DATA=await r.json(); paint(); }catch(e){}
+}
+function paint(){
+  var leads=DATA.leads||[], sess=DATA.sessions||[];
+  document.getElementById("s-total").textContent=leads.length;
+  document.getElementById("s-new").textContent=leads.filter(function(l){return l.status==="New";}).length;
+  document.getElementById("s-cb").textContent=leads.filter(function(l){return l.type==="Callback";}).length;
+  var active=sess.filter(function(s){ return s.messages && s.messages.some(function(m){return m.role==="user";}); });
+  document.getElementById("s-live").textContent=active.length;
+
+  // live conversations
+  var live=document.getElementById("live"); var html="";
+  active.slice(0,12).forEach(function(s){
+    var human=s.mode==="human";
+    var rem=human&&s.resumeAt?(s.resumeAt-Date.now()):0;
+    html+='<div class="sess"><div class="top">'+
+      '<b style="font-size:13px">Visitor '+esc(s.id.slice(-4))+'</b>'+
+      (human?'<span class="badge b-h">You\'re handling · AI back in '+mmss(rem)+'</span>':'<span class="badge b-ai">AI handling</span>')+
+      '<span style="margin-left:auto;font-size:11px;color:var(--muted)">'+ago(s.lastActivity)+'</span></div>';
+    html+='<div class="tx">';
+    s.messages.slice(-8).forEach(function(m){
+      if(m.role==="system"){ html+='<div class="m sys">'+esc(m.text)+'</div>'; return; }
+      var c=m.role==="user"?"user":(m.role==="team"?"team":"bot");
+      html+='<div class="m '+c+'">'+(m.role==="team"?'<b style="font-size:10px;color:var(--coral)">You</b><br>':'')+esc(m.text)+'</div>';
+    });
+    html+='</div><div class="replyrow">'+
+      (human?'<button class="hb" data-hb="'+s.id+'">Hand back</button>':'')+
+      '<input placeholder="Reply as reception (pauses the AI)…" data-sid="'+s.id+'"/>'+
+      '<button class="s" data-send="'+s.id+'">→</button></div></div>';
+  });
+  live.innerHTML=html||'<div class="empty">No live chats yet. Open the widget in another tab and say hi.</div>';
+
+  // leads
+  var lb=document.getElementById("leads");
+  if(!leads.length){ lb.innerHTML='<div class="empty">No enquiries yet.</div>'; }
+  else{
+    var t='<table><tr><th>Name</th><th>About</th><th>When</th><th>Status</th><th></th></tr>';
+    leads.slice(0,60).forEach(function(l){
+      t+='<tr><td><b>'+esc(l.name)+'</b><br><span style="color:var(--muted);font-size:11.5px">'+esc(l.phone)+(l.email?' · '+esc(l.email):'')+(l.patientType&&l.type!=='Callback'?' · '+esc(l.patientType):'')+'</span>'+
+        (l.type==="Callback"?' <span class="tag">Callback</span>':'')+'</td>'+
+        '<td>'+esc(l.service)+'</td><td style="font-size:12px">'+esc(l.when)+'</td>'+
+        '<td><select data-lead="'+l.id+'">'+["New","Contacted","Booked"].map(function(o){return '<option'+(l.status===o?' selected':'')+'>'+o+'</option>';}).join("")+'</select></td>'+
+        '<td style="color:var(--muted);font-size:11px">'+ago(l.createdAt)+'</td></tr>';
+    });
+    lb.innerHTML=t+'</table>';
+  }
+  wire();
+}
+function wire(){
+  document.querySelectorAll("[data-send]").forEach(function(b){ b.onclick=function(){ var sid=b.getAttribute("data-send"); var inp=document.querySelector('input[data-sid="'+sid+'"]'); reply(sid,inp.value); inp.value=""; }; });
+  document.querySelectorAll("input[data-sid]").forEach(function(inp){ inp.onkeydown=function(e){ if(e.key==="Enter"){ reply(inp.getAttribute("data-sid"),inp.value); inp.value=""; } }; });
+  document.querySelectorAll("[data-hb]").forEach(function(b){ b.onclick=function(){ fetch("/api/staff/handback",{method:"POST",headers:hdr(),body:JSON.stringify({sessionId:b.getAttribute("data-hb")})}).then(refresh); }; });
+  document.querySelectorAll("select[data-lead]").forEach(function(s){ s.onchange=function(){ fetch("/api/admin/lead-status",{method:"POST",headers:hdr(),body:JSON.stringify({id:s.getAttribute("data-lead"),status:s.value})}); }; });
+}
+function reply(sid,text){ text=(text||"").trim(); if(!text)return; fetch("/api/staff/reply",{method:"POST",headers:hdr(),body:JSON.stringify({sessionId:sid,text:text})}).then(refresh); }
+</script>
+</body></html>
