@@ -2,14 +2,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Ryde Dental — Staff Inbox</title>
 <style>
-:root{--teal:#0E5A57;--tealDeep:#0A3F3D;--coral:#F2615A;--coralDeep:#DC4F49;--ink:#10302F;--paper:#FBFDFC;--mint:#EAF4F2;--line:#DCEAE7;--muted:#5B7472;--bg:#EEF4F2;--green:#0B6B4A;--amber:#9A6B00}
+:root{--teal:#F17A31;--tealDeep:#C56428;--coral:#F17A31;--coralDeep:#C56428;--ink:#38291B;--paper:#FFFFFF;--mint:#FAEFE1;--line:#ECE2D4;--muted:#8A7A68;--bg:#FBF6EF;--green:#5E7D66;--amber:#C56428}
 *{box-sizing:border-box}
 body{margin:0;font-family:'Inter',-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink);height:100vh;display:flex;flex-direction:column;overflow:hidden}
 button,input{font:inherit}
 a{color:var(--teal)}
 
 /* gate */
-#gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(900px 500px at 50% -10%,#DCEEEB,#EEF4F2);z-index:50;padding:20px}
+#gate{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(900px 500px at 50% -10%,#FBE2D0,#FBF6EF);z-index:50;padding:20px}
 .gx{background:#fff;border:1px solid var(--line);border-radius:20px;max-width:380px;width:100%;padding:30px;text-align:center;box-shadow:0 24px 60px rgba(10,63,61,.12)}
 .gx .sp{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg,var(--teal),var(--tealDeep));display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px}
 .gx h2{margin:0 0 4px;font-size:20px}.gx p{color:var(--muted);font-size:13.5px;margin:0 0 16px}
@@ -22,7 +22,7 @@ a{color:var(--teal)}
 .bar .logo{font-weight:800;font-size:16px;display:flex;align-items:center;gap:8px}
 .bar .stats{margin-left:auto;display:flex;gap:8px}
 .bar .stat{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:6px 12px;text-align:center;min-width:64px}
-.bar .stat b{display:block;font-size:17px;line-height:1}.bar .stat span{font-size:10.5px;color:#C7E7E3}
+.bar .stat b{display:block;font-size:17px;line-height:1}.bar .stat span{font-size:10.5px;color:#FCE3CF}
 .bar .clock{font-size:11.5px;opacity:.8;margin-left:6px}
 @media(max-width:720px){.bar .stat span{display:none}.bar .stat{min-width:0;padding:5px 9px}.bar .clock{display:none}}
 
@@ -37,15 +37,15 @@ a{color:var(--teal)}
 .list{width:330px;border-right:1px solid var(--line);overflow-y:auto;background:var(--paper);flex-shrink:0}
 .citem{padding:12px 14px;border-bottom:1px solid var(--line);cursor:pointer;display:flex;gap:10px;align-items:flex-start}
 .citem:hover{background:var(--mint)}
-.citem.sel{background:#E2F0EE;box-shadow:inset 3px 0 0 var(--coral)}
-.citem .ava{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#157E79,var(--tealDeep));color:#EAFBF8;font-weight:700;font-size:12px}
+.citem.sel{background:#FBEFE3;box-shadow:inset 3px 0 0 var(--coral)}
+.citem .ava{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#F39A5E,var(--tealDeep));color:#EAFBF8;font-weight:700;font-size:12px}
 .citem .mid{flex:1;min-width:0}
 .citem .nm{font-weight:700;font-size:13.5px;display:flex;align-items:center;gap:6px}
 .citem .pv{font-size:12.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .citem .rt{font-size:10.5px;color:var(--muted);flex-shrink:0}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--coral);flex-shrink:0}
 .bdg{font-size:10px;font-weight:700;padding:2px 7px;border-radius:20px}
-.b-ai{background:#DDF3EA;color:var(--green)}.b-h{background:#FFF4DE;color:var(--amber)}
+.b-ai{background:#E7EFE8;color:var(--green)}.b-h{background:#FBE1D1;color:var(--amber)}
 .empty{padding:30px 20px;text-align:center;color:var(--muted);font-size:13px}
 
 .detail{flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg)}
@@ -58,8 +58,8 @@ a{color:var(--teal)}
 .m{max-width:78%;padding:9px 12px;font-size:13.5px;line-height:1.45;border-radius:14px;white-space:pre-wrap;word-wrap:break-word}
 .m.user{align-self:flex-end;background:var(--teal);color:#EAFBF8;border-bottom-right-radius:4px}
 .m.bot{align-self:flex-start;background:#fff;border:1px solid var(--line);border-bottom-left-radius:4px}
-.m.team{align-self:flex-end;background:#FFEDEB;border:1px solid #F6D3D0;border-bottom-right-radius:4px}
-.m.sys{align-self:center;background:#E7EEEC;color:var(--muted);font-size:11px;border-radius:20px;padding:4px 11px}
+.m.team{align-self:flex-end;background:#FBE1D1;border:1px solid #F3D2BC;border-bottom-right-radius:4px}
+.m.sys{align-self:center;background:#F0EADE;color:var(--muted);font-size:11px;border-radius:20px;padding:4px 11px}
 .m .lab{font-size:10px;font-weight:700;opacity:.7;margin-bottom:2px}
 .replybar{padding:12px;border-top:1px solid var(--line);background:var(--paper);display:flex;gap:8px;flex-shrink:0}
 .replybar input{flex:1;padding:11px 14px;border:1px solid var(--line);border-radius:22px;outline:none;font-size:14px;background:#fff}
@@ -71,9 +71,9 @@ a{color:var(--teal)}
 .tablewrap{max-width:1000px;margin:0 auto;background:var(--paper);border:1px solid var(--line);border-radius:14px;overflow:hidden}
 table{width:100%;border-collapse:collapse}
 td,th{text-align:left;padding:12px 14px;font-size:13.5px;border-bottom:1px solid var(--line)}
-th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:#F4FAF8}
+th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:#FBF3EA}
 tr:last-child td{border-bottom:none}
-.tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:#FFEDEB;color:var(--coralDeep)}
+.tag{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:20px;background:#FBE1D1;color:var(--coralDeep)}
 select{padding:5px 9px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;background:#fff}
 .ltop{max-width:1000px;margin:0 auto 12px;display:flex;align-items:center;justify-content:space-between;gap:10px}
 .ltitle{font-weight:700;font-size:14px;color:var(--ink)}
