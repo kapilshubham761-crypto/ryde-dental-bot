@@ -17,7 +17,7 @@ const NOTIFY_WEBHOOK_URL = process.env.NOTIFY_WEBHOOK_URL || ""; // a Google App
 const WEB3FORMS_KEY = process.env.WEB3FORMS_KEY || "";          // OR a free Web3Forms access key (email only)
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || "rdftopryde@gmail.com";
 const EMAIL_AFTER_MIN = parseInt(process.env.EMAIL_AFTER_MIN) || 10; // email a chat transcript this many minutes after it goes quiet
-const EMAIL_ALL_CHATS = (process.env.EMAIL_ALL_CHATS || "true") !== "false"; // false = only email bookings/callbacks
+const EMAIL_ALL_CHATS = (process.env.EMAIL_ALL_CHATS || "false") === "true"; // default: email only bookings/callbacks (set true to also email full chat transcripts)
 const NOTIFY_ON = !!(NOTIFY_WEBHOOK_URL || WEB3FORMS_KEY);
 const DATA_FILE = path.join(__dirname, "data.json");
 
@@ -86,7 +86,7 @@ async function geminiOnce(model, session) {
     body: JSON.stringify({
       system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
       contents,
-      generationConfig: { temperature: 0.6, maxOutputTokens: 256, responseMimeType: "application/json" }, // 256 keeps answers short. Raise for longer replies.
+      generationConfig: { temperature: 0.6, maxOutputTokens: 800, responseMimeType: "application/json" }, // headroom so the JSON reply never gets cut off mid-output
     }),
   });
   if (!res.ok) { const err = new Error("Gemini " + res.status + ": " + (await res.text()).slice(0, 300)); err.status = res.status; throw err; }
@@ -109,9 +109,9 @@ async function callGemini(session) {
 function parseReply(raw) {
   let s = (raw || "").trim().replace(/```json|```/g, "").trim();
   const a = s.indexOf("{"), b = s.lastIndexOf("}");
-  if (a !== -1 && b !== -1) s = s.slice(a, b + 1);
+  const core = (a !== -1 && b !== -1 && b > a) ? s.slice(a, b + 1) : s;
   try {
-    const o = JSON.parse(s);
+    const o = JSON.parse(core);
     return {
       reply: o.reply || "Sorry, could you say that another way?",
       chips: Array.isArray(o.chips) ? o.chips.slice(0, 4) : [],
@@ -119,7 +119,16 @@ function parseReply(raw) {
       lead: o.lead && typeof o.lead === "object" ? o.lead : null,
     };
   } catch {
-    return { reply: raw && raw.length < 500 ? raw : "Sorry, I had a hiccup — you can reach us on (02) 9807 9800.", chips: ["Book a visit", "Request a callback"], action: "none", lead: null };
+    // JSON came back incomplete/truncated — salvage just the reply text (never show raw JSON to the user)
+    const m = s.match(/"reply"\s*:\s*"((?:[^"\\]|\\.)*)"/);
+    if (m) {
+      const reply = m[1].replace(/\\"/g, '"').replace(/\\n/g, "\n").replace(/\\\\/g, "\\");
+      let chips = [];
+      const cm = s.match(/"chips"\s*:\s*\[([^\]]*)\]/);
+      if (cm) { try { chips = JSON.parse("[" + cm[1] + "]").filter(x => typeof x === "string").slice(0, 4); } catch {} }
+      return { reply: reply, chips: chips, action: "none", lead: null };
+    }
+    return { reply: "Sorry, I had a hiccup — you can reach us on (02) 9807 9800.", chips: ["Book a visit", "Request a callback"], action: "none", lead: null };
   }
 }
 
@@ -151,14 +160,11 @@ function emailLead(s, lead, type) {
   if (!NOTIFY_ON) return;
   const subject = (type === "Callback" ? "\ud83d\udcde New callback \u2014 " : "\ud83d\udcc5 New booking \u2014 ") + lead.name;
   const body =
-    type + " request via Smily\n\n" +
+    "New " + (type === "Callback" ? "callback request" : "booking") + " from the Smily chatbot:\n\n" +
     "Name: " + lead.name + "\n" +
     "Mobile: " + lead.phone + "\n" +
-    (lead.email ? "Email: " + lead.email + "\n" : "") +
-    "For: " + (lead.service || "General enquiry") + "\n" +
-    "When: " + (lead.when || (type === "Callback" ? "Callback requested" : "Flexible")) + "\n" +
-    (lead.patientType && lead.patientType !== "\u2014" ? "Patient: " + lead.patientType + "\n" : "") +
-    "\n--- Conversation ---\n" + transcriptText(s);
+    "Email: " + (lead.email || "(not provided)") + "\n" +
+    "Contacted about: " + (lead.service || "General enquiry") + "\n";
   s.emailedCount = s.messages.length; s.leadEmailed = true;
   notify(subject, body);
 }
